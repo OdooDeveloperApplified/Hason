@@ -1,0 +1,163 @@
+<odoo>
+    <template id="report_saleorder_document_inherit_hsn_doc_v20_final"
+              inherit_id="sale.report_saleorder_document">
+
+        <xpath expr="//th[@name='th_description']" position="before">
+            <th name="th_sr_no" class="text-center" style="width:40px;">Sr. No.</th>
+        </xpath>
+
+        <xpath expr="//th[@name='th_description']" position="replace">
+            <th name="th_description" class="text-start">Particulars</th>
+        </xpath>
+
+        <xpath expr="//table[@class='table table-sm o_main_table table-borderless mt-4']/thead/tr/th[@name='th_quantity']" position="before">
+            <th name="th_hsn_code" class="text-start">HSN Code</th>
+        </xpath>
+
+        <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_name']" position="before">
+            <td name="td_sr_no" class="text-center">
+                <span t-esc="line_index + 1"/>
+            </td>
+        </xpath>
+
+        <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_quantity']" position="before">
+            <td name="td_hsn_code" class="text-start">
+                <span t-esc="line.product_id.l10n_in_hsn_code or 'N/A'"/>
+            </td>
+        </xpath>
+
+        <!-- <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_name']/*[last()]" position="attributes">
+            <attribute name="t-if">False</attribute>
+        </xpath> -->
+
+        <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_name']" position="replace">
+            <td name="td_name" class="text-start">
+                <span t-esc="line.product_id.name"/>
+            </td>
+        </xpath>
+
+        
+        <xpath expr="//div[@id='total']//t[@t-call='sale.document_tax_totals']" position="replace">
+            <t t-set="tax_totals" t-value="doc.tax_totals"/>
+            <t t-call="sale.document_tax_totals">
+                <t t-set="colspan" t-value="6"/>
+            </t>
+        </xpath>
+        <xpath expr="//div[@id='informations']/div[.//span[@t-field='doc.user_id']]" position="after">
+            <div class="col-auto col-3 mw-100 mb-2" name="custom_field_block">
+                <strong>Transport</strong><br/>
+                <span class="m-0" t-field="doc.transport"/>
+            </div>
+        </xpath>
+       
+
+        <xpath expr="//span[@name='order_note']/ancestor::div[1]" position="replace">
+            <!-- Your NEW replacement block starts here -->
+            <div class="row">
+                <div class="col-7">
+                    <span t-field="doc.note" t-attf-style="#{'text-align:justify;text-justify:inter-word;' if doc.company_id.terms_type != 'html' else ''}" name="order_note"/>
+                    <p t-if="not is_html_empty(doc.payment_term_id.note)">
+                        <span t-field="doc.payment_term_id.note">The payment should also be transmitted with love</span>
+                    </p>
+                    <div class="oe_structure"/>
+                    <p t-if="doc.fiscal_position_id and not is_html_empty(doc.fiscal_position_id.sudo().note)"
+                        id="fiscal_position_remark">
+                        <strong>Fiscal Position Remark:</strong>
+                        <span t-field="doc.fiscal_position_id.sudo().note">No further requirements for this payment</span>
+                    </p>
+                </div>
+
+                <div class="col-6 text-start" style="margin-left:130px;">
+                        <strong>For, HASON CHEMTECH PVT. LTD.</strong>
+                        <div style="height:50px;"></div>
+                        <p>Authorized Signatory </p>
+                    </div>
+            </div>
+        </xpath>
+        <xpath expr="//div[@name='so_total_summary']" position="after">
+            <div style="margin-top: 8px;">
+                <table style="width:100%; border:1px solid #000; padding:6px; font-size:14px;">
+                    <tr>
+                        <td style="padding:4px; vertical-align: top;">
+                            <strong>Amount in Words:</strong>
+                        </td>
+                        <td style="padding:4px; vertical-align: top; word-break: break-word;">
+                          
+                                <span t-esc="doc.currency_id.amount_to_text(doc.amount_total) + ' Only'"/>
+                            
+                        </td>
+                    </tr>       
+                </table>
+            </div>
+        </xpath>
+
+        <xpath expr="//th[@name='th_taxes']" position="replace">
+        </xpath>
+
+        <xpath expr="//td[@name='td_taxes']" position="replace">
+        </xpath>
+        <xpath expr="//t[@t-set='address']" position="inside">
+            <p t-if="doc.partner_id.mobile">
+                <strong>Mobile:</strong>
+                <span t-field="doc.partner_id.mobile"/>
+            </p>
+        </xpath>
+    </template>
+    <template id="address_layout_inherit_custom" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@class='page'][1]" position="before">
+            <!-- Date -->
+            <div class="page">
+                
+                <strong>Date:</strong> <span t-esc="doc.date_order.strftime('%d/%m/%Y')"/><br/><br/>
+                <strong>To:</strong><br/>
+                <div name="address">
+                     <span t-esc="doc.partner_id.name"/>
+                </div><br/>
+                <strong>Subject:</strong> <span t-esc="doc.subject"/><br/><br/>
+                <strong>Dear Sir:</strong><br/>
+                <p>We are in reference with above mentioned sub. We here with sending
+                as per your schedule alongwith following details,</p><br/>
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Order No.&#160;&#160;:&#160;&#160;</strong><span t-esc="doc.po_no"/><br/>
+                        <strong>Batch No.&#160;&#160;:&#160;&#160;</strong><span t-esc="doc.batch_no"/><br/>
+                        <strong>Bill No.&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:&#160;&#160;</strong>
+                            <t t-if="doc.invoice_ids">
+                                <t t-foreach="doc.invoice_ids" t-as="inv">
+                                    <span t-esc="inv.name"/>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <span>-</span>
+                            </t>
+                            <br/>
+                        <strong>Amount&#160;&#160;&#160;&#160;&#160;:&#160;&#160;</strong><span t-esc="doc.amount_total"/><br/>
+                        <span t-esc="doc.currency_id.amount_to_text(doc.amount_total) + ' Only'"/><br/>
+                        <strong>Packing&#160;&#160;&#160;&#160;&#160;&#160;:&#160;&#160;</strong>
+                            <t t-foreach="doc.order_line" t-as="l">
+                                <t t-if="l.product_packaging_id">
+                                    <span>
+                                        <t t-esc="l.product_packaging_qty"/> 
+                                        <t t-esc="l.product_packaging_id.name"/>
+                                      
+                                    </span>
+                                </t>
+                            </t><br/>
+                        <strong>Transport&#160;:&#160;&#160;</strong><span t-esc="doc.transport"/><br/>
+                        <strong>Lr No.&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:&#160;&#160;</strong><span t-esc="doc.lr_no"/><br/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Date&#160;&#160;:&#160;&#160;</strong><span t-esc="doc.date_order.strftime('%d/%m/%Y')"/><br/>
+                        <!-- <strong>Order No.:</strong><span t-esc="o.po_no"/><br/> -->
+                    </div>
+                </div><br/>
+                <p>We herewith sending above goods and attched original bill with Commercial bill, MSDS, 
+                Specification and analytical report, please acknowledge the Receipt of same.</p><br/><br/><br/>
+                Thanks and best Regards.
+                
+            </div>
+            <div style="page-break-after: always;"></div>
+        </xpath>
+    </template>
+    
+</odoo>

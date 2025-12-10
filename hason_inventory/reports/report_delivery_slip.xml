@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Header fields -->
+        <template id="report_delivery_document_header_fields" inherit_id="stock.report_delivery_document">
+            <xpath expr="//div[@name='div_sched_date']" position="after">
+                <div class="col-auto col-3 mw-100 mb-2">
+                    <strong>Transport:</strong>
+                    <t t-if="o.sale_id and o.sale_id.transport">
+                                <span t-esc="o.sale_id.transport"/>
+                            </t>
+                            <t t-if="not (o.sale_id and o.sale_id.transport)">
+                                <span>-</span>
+                            </t>
+                </div>
+
+                <div class="col-auto col-3 mw-100 mb-2">
+                    <strong>Vehicle No:</strong>
+                    <t t-if="o.vehicle_no">
+                                <span t-esc="o.vehicle_no"/>
+                            </t>
+                            <t t-if="not o.vehicle_no">
+                                <span>-</span>
+                            </t>
+                </div>
+            </xpath>
+            <xpath expr="//div[@name='outgoing_delivery_address']" position="inside">
+                <!-- Mobile Number -->
+                <t t-if="o.move_ids and o.move_ids[0].partner_id.mobile">
+                    <div>
+                        <strong>Mobile:</strong>
+                        <span t-field="o.move_ids[0].partner_id.mobile"/>
+                    </div>
+                </t>
+                 <t t-if="o.move_ids and o.move_ids[0].partner_id.vat">
+                    <div>
+                        <strong>GSTIN:</strong>
+                        <span t-field="o.move_ids[0].partner_id.vat"/>
+                    </div>
+                </t>
+                <t t-if="o.move_ids and o.move_ids[0].partner_id.l10n_in_pan">
+                    <div>
+                        <strong>PAN No:</strong>
+                        <span t-field="o.move_ids[0].partner_id.l10n_in_pan"/>
+                    </div>
+                </t>
+            </xpath>
+            <xpath expr="//div[@name='signature']" position="after">
+                <div class="row mt32 mb32" name="custom_two_col_block">
+                    <div class="col-6">
+                        <strong>Receiver's Stamp and Signature</strong>
+                        
+                    </div>
+                    <div class="col-6 text-end">
+                        <strong>For, HASON CHEMTECH PVT. LTD.</strong>
+                        <div style="height:30px;"></div>
+                        <p>Authorized Signatory </p>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Code to change Ordered header to Quantity -->
+            <xpath expr="//th[@name='th_sm_ordered']" position="replace"> 
+                <th name="th_sm_ordered">
+                    <strong>Quantity</strong>
+                </th> 
+            </xpath> 
+
+            <!-- Code to change Product header to Description -->
+            <xpath expr="//th[@name='th_sm_product']" position="replace"> 
+                <th name="th_sm_product">
+                    <strong>Description</strong>
+                </th> 
+            </xpath> 
+            <!-- Replace Product header text -->
+            <xpath expr="//th[@name='th_sml_product']/strong" position="replace">
+                <strong>Description</strong>
+            </xpath>
+
+            <!-- Replace Ordered header text -->
+            <xpath expr="//th[@name='th_sml_qty_ordered']/strong" position="replace">
+                <strong>Quantity</strong>
+            </xpath>
+
+            <!-- Non working code starts -->
+            <!-- SR NO HEADER --> 
+            <!-- <xpath expr="//table[@name='stock_move_table']/thead/tr/th[@name='th_sm_product']/strong" position="before">
+                <th style="width:40px;" class="text-left"><strong>Sr. No.</strong></th> 
+            </xpath> 
+
+            <xpath expr="//table[@name='stock_move_line_table']/thead/tr/th[@name='th_sml_product']/strong" position="before"> 
+                <th style="width:40px;" class="text-left"><strong>Sr. No.</strong></th> 
+            </xpath> -->
+
+            <!-- Counter for normal (not yet done) move lines -->
+            <!-- <xpath expr="//table[@name='stock_move_table']" position="before">
+                <t t-set="sn_move" t-value="0"></t>
+            </xpath> -->
+
+            <!--   SERIAL NO FOR NORMAL TABLE   -->
+            <!-- <xpath expr="//table[@name='stock_move_table']/tbody/tr/td[1]" position="before">
+                <td style="width:40px;" class="text-left">
+                    <t t-set="sn_move" t-value="sn_move + 1"/>
+                    <span t-esc="sn_move"/>
+                </td>
+            </xpath> -->
+            <!-- Non working code ends -->
+
+        </template>
+
+
+        <!-- code to add serial number values in the validated delivery slips only -->
+        <!-- <template id="report_delivery_document_header_fields" inherit_id="stock.stock_report_delivery_aggregated_move_lines">
+            <xpath expr="//tr[@t-foreach='aggregated_lines']/td[1]" position="before">
+                <td style="width:40px;" class="text-left">
+                    <t t-set="sn_done" t-value="(sn_done or 0) + 1"/>
+                    <span t-esc="sn_done"/>
+                </td>
+            </xpath>
+        </template> -->
+
+    </data>
+</odoo>

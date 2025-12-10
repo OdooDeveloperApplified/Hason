@@ -1,0 +1,163 @@
+<odoo>
+    <template id="report_invoice_document_srn"
+              inherit_id="account.report_invoice_document">
+
+        <!-- Add SR NO Header -->
+        <xpath expr="//table[hasclass('o_main_table')]/thead/tr/th[1]"
+               position="before">
+            <th name="th_sr_no" class="text-left" style="width: 5%;">Sr. No.</th>
+        </xpath>
+
+        <!-- Add SR NO Values -->
+        <xpath expr="//span[@t-field='line.name']/parent::td"
+               position="before">
+            <td name="td_sr_no" class="text-left">
+                <span t-esc="line_index + 1"/>
+            </td>
+        </xpath>
+
+        <xpath expr="//th[@name='th_description']" position="replace">
+            <th name="th_description" class="text-start">Description of Goods</th>
+        </xpath>
+
+        <xpath expr="//td[@name='account_invoice_line_name']" position="replace">
+            <td name="account_invoice_line_name">
+
+                <!-- Product Name -->
+                <div>
+                    <strong><span t-esc="line.product_id.display_name"/></strong>
+                </div>
+
+                <!-- Sale Order Line Description -->
+                <t t-if="line.sale_line_ids">
+                    <t t-foreach="line.sale_line_ids" t-as="so_line">
+                        <div t-if="so_line.name and so_line.name != line.product_id.display_name"
+                            style="font-size: 13px;" class="text-muted">
+                            <span t-esc="so_line.name"/>
+                        </div>
+                    </t>
+                </t>
+
+            </td>
+        </xpath>
+
+        <xpath expr="//div[@name='address_not_same_as_shipping']//div[@id='partner_vat_address_not_same_as_shipping']" position="after">
+            <div t-if="o.partner_id.l10n_in_pan">
+                PAN No:
+                <span t-esc="o.partner_id.l10n_in_pan"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@name='address_same_as_shipping']//div[@id='partner_vat_address_same_as_shipping']" position="after">
+            <div t-if="o.partner_id.l10n_in_pan">
+                PAN No:
+                <span t-esc="o.partner_id.l10n_in_pan"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@name='no_shipping']//div[@id='partner_vat_no_shipping']" position="after">
+            <div t-if="o.partner_id.l10n_in_pan">
+                PAN No:
+                <span t-esc="o.partner_id.l10n_in_pan"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@name='comment']" position="replace">
+            <div style="page-break-inside: avoid;">
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <div class="text-muted mb-3" t-attf-style="#{'text-align:justify;text-justify:inter-word;' if o.company_id.terms_type != 'html' else ''}" t-if="not is_html_empty(o.narration)" name="comment">
+                            <span t-field="o.narration"/>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                       
+                        <div class="text-end">
+                            <strong>For, HASON CHEMTECH PVT. LTD.</strong>
+                            <div style="height:50px;"></div>
+                            <p>Authorized Signatory </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+       
+    </template>
+    <template id="report_header_inherit_pan_gst" inherit_id="web.external_layout_boxed">
+        <xpath expr="//ul[@name='company_address_list']" position="inside">
+            <div class="company-pan" t-if="company.partner_id.l10n_in_pan">
+                <strong>PAN No.:</strong> 
+                <span t-field="company.partner_id.l10n_in_pan"/>
+            </div>
+        </xpath>
+    </template>
+    <template id="hason_invoice_final_v2" inherit_id="l10n_in.l10n_in_report_invoice_document_inherit">
+        <xpath expr="//div[@name='l10n_in_hsn_summary']" position="replace">
+            <div>
+                <strong>Bank Details:</strong><br/>
+                <t t-if="o.company_id.bank_ids">
+                    <t t-set="b" t-value="o.company_id.bank_ids[0]"/>
+                    Bank: <span t-esc="b.bank_id.name"/><br/>
+                    A/C No: <span t-esc="b.acc_number"/><br/>
+                    IFSC: <span t-esc="b.bank_id.bic"/>
+                </t>
+                <t t-else="">
+                    No Bank Details Found
+                </t>
+            </div>
+        </xpath>
+
+        <xpath expr="//span[@id='payment_terms_note_id']" position="replace">
+            <div style="font-weight: bold !important; font-size: 110%; color: #000;">
+                <span id="payment_terms_note_id" 
+                      t-if="o.invoice_payment_term_id.note" 
+                      t-field="o.invoice_payment_term_id.note" 
+                      name="payment_term"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//tr[hasclass('is-subtotal')]" position="replace">
+        </xpath>
+
+        <xpath expr="//address/ancestor::div[hasclass('row')]" position="replace">
+            <div class="row mb-4" style="margin-top: 20px;">
+                    
+                <div class="col-6">
+                    <strong>Billing Address:</strong><br/>
+                        
+                    <t t-if="o.billing_address_type == 'hason'">
+                        <div t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    </t>
+                     <t t-elif="o.billing_address_type == 'other' and o.custom_billing_partner_id">
+                        <div t-field="o.custom_billing_partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    </t>
+                    <t t-else="">
+                        <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    </t>
+
+                    <div t-if="o.partner_id.vat">
+                        <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-esc="o.company_id.account_fiscal_country_id.vat_label"/>
+                        <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>
+                    </div>
+                    <div t-if="o.l10n_in_state_id" class="mt-1">
+                        Place of supply: <span t-out="o.l10n_in_state_id.name" />
+                    </div>
+                </div>
+
+                <div class="col-6 text-start">
+                    <strong>Shipping Address:</strong><br/>
+                    <div t-field="o.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                        
+                    <div t-if="o.company_id.account_fiscal_country_id.code == 'IN' and o.partner_shipping_id.vat">
+                        GSTIN: <span t-field="o.partner_shipping_id.vat"/>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <xpath
+            expr="//div[@class='mb-3'][p[@name='payment_communication']]"
+            position="replace">
+        </xpath>
+
+    </template>
+</odoo>

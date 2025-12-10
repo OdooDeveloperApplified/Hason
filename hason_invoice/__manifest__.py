@@ -1,0 +1,15 @@
+{
+    'name': 'Hason_invoice',
+    'version': '17.0.1.0.0',
+    'summary': 'Add Transport Name field in Sale Order',
+    'category': 'Sales',
+    'author': 'Applified',
+    'depends': ['sale', 'l10n_in', 'stock','sale_stock', 'account','web'],
+    'data': [
+        'views/invoice_report_inherit.xml',
+        'reports/invoice_report.xml',
+    ],
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
+}

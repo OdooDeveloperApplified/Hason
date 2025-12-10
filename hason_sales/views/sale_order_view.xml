@@ -1,0 +1,32 @@
+<odoo>
+
+    <!-- Add transport above validity_date -->
+    <record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='validity_date']" position="before">
+                <field name="transport"/>
+            </xpath>
+            <xpath expr="//field[@name='l10n_in_gst_treatment']" position="after">
+                <field name="subject"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="po_no"/>
+                <field name="batch_no"/>
+                <field name="bill_no"/>
+                <field name="lr_no"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                
+                <field name="billing_address_type" widget="radio" options="{'horizontal': true}"/>
+                
+                <field name="custom_billing_partner_id" 
+                       invisible="billing_address_type == 'hason'" 
+                       required="billing_address_type == 'other'"/>
+            
+            </xpath>
+        </field>
+    </record>
+</odoo>
