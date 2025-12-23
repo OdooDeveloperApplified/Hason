@@ -120,7 +120,7 @@
         </xpath>
 
         <xpath expr="//address/ancestor::div[hasclass('row')]" position="replace">
-            <div class="row mb-4" style="margin-top: 20px;">
+            <div class="row mb-4">
                     
                 <div class="col-6">
                     <strong>Billing Address:</strong><br/>
@@ -154,10 +154,26 @@
                 </div>
             </div>
         </xpath>
-        <xpath
-            expr="//div[@class='mb-3'][p[@name='payment_communication']]"
-            position="replace">
-        </xpath>
 
     </template>
+
+    <!-- <record id="paperformat_invoice" model="report.paperformat">
+        <field name="name">Invoices</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">30</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">25</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="paperformat_id" ref="hason_invoice.paperformat_invoice"/>
+    </record> -->
 </odoo>

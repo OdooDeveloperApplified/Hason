@@ -7,7 +7,6 @@
     'depends': ['sale', 'l10n_in', 'stock','sale_stock', 'account','web'],
     'data': [
         'views/invoice_report_inherit.xml',
-        'reports/invoice_report.xml',
     ],
     'installable': True,
     'application': True,
