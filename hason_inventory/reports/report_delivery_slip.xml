@@ -82,42 +82,15 @@
                 <strong>Quantity</strong>
             </xpath>
 
-            <!-- Non working code starts -->
-            <!-- SR NO HEADER --> 
-            <!-- <xpath expr="//table[@name='stock_move_table']/thead/tr/th[@name='th_sm_product']/strong" position="before">
-                <th style="width:40px;" class="text-left"><strong>Sr. No.</strong></th> 
-            </xpath> 
-
-            <xpath expr="//table[@name='stock_move_line_table']/thead/tr/th[@name='th_sml_product']/strong" position="before"> 
-                <th style="width:40px;" class="text-left"><strong>Sr. No.</strong></th> 
-            </xpath> -->
-
-            <!-- Counter for normal (not yet done) move lines -->
-            <!-- <xpath expr="//table[@name='stock_move_table']" position="before">
-                <t t-set="sn_move" t-value="0"></t>
-            </xpath> -->
-
-            <!--   SERIAL NO FOR NORMAL TABLE   -->
-            <!-- <xpath expr="//table[@name='stock_move_table']/tbody/tr/td[1]" position="before">
-                <td style="width:40px;" class="text-left">
-                    <t t-set="sn_move" t-value="sn_move + 1"/>
-                    <span t-esc="sn_move"/>
-                </td>
-            </xpath> -->
-            <!-- Non working code ends -->
-
-        </template>
-
-
-        <!-- code to add serial number values in the validated delivery slips only -->
-        <!-- <template id="report_delivery_document_header_fields" inherit_id="stock.stock_report_delivery_aggregated_move_lines">
-            <xpath expr="//tr[@t-foreach='aggregated_lines']/td[1]" position="before">
-                <td style="width:40px;" class="text-left">
-                    <t t-set="sn_done" t-value="(sn_done or 0) + 1"/>
-                    <span t-esc="sn_done"/>
-                </td>
+            <!-- Add Serial No column BEFORE the Product column -->
+            <!-- <xpath expr="//table[@name='stock_move_line_table']/thead/tr/th[@name='th_sml_product']" position="before">
+                <th class="text-left" style="width:40px;">Sr. No.</th>
             </xpath>
-        </template> -->
+            <xpath expr="//table[@name='stock_move_table']/thead/tr/th[@name='th_sm_product']" position="before">
+                <th style="width:40px;" class="text-left">Sr. No.</th>
+            </xpath> -->
 
+             
+        </template>
     </data>
 </odoo>
