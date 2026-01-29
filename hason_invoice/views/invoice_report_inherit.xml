@@ -1,6 +1,5 @@
 <odoo>
-    <template id="report_invoice_document_srn"
-              inherit_id="account.report_invoice_document">
+    <template id="report_invoice_document_srn" inherit_id="account.report_invoice_document">
 
         <!-- Add SR NO Header -->
         <xpath expr="//table[hasclass('o_main_table')]/thead/tr/th[1]"
@@ -63,14 +62,16 @@
         </xpath>
 
         <xpath expr="//div[@name='comment']" position="replace">
-            <div style="page-break-inside: avoid;">
-                <div class="row mt-3">
-                    <div class="col-6">
+            <div>
+                <div class="row">
+                    <div class="col-12">
                         <div class="text-muted mb-3" t-attf-style="#{'text-align:justify;text-justify:inter-word;' if o.company_id.terms_type != 'html' else ''}" t-if="not is_html_empty(o.narration)" name="comment">
                             <span t-field="o.narration"/>
                         </div>
                     </div>
-                    <div class="col-6">
+                </div>
+                <div class="row">
+                    <div class="col-12">
                        
                         <div class="text-end">
                             <strong>For, HASON CHEMTECH PVT. LTD.</strong>
@@ -79,6 +80,30 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@id='informations']" position="inside">
+
+            <div t-if="o.vehicle_no"
+                t-attf-class="#{'col-auto col-3 mw-100' if report_type != 'html' else 'col'} mb-2"
+                name="vehicle">
+                <strong>Vehicle No:</strong><br/>
+                <span t-field="o.vehicle_no"/>
+            </div>
+
+            <div t-if="o.acknowledgement_name"
+                t-attf-class="#{'col-auto col-3 mw-100' if report_type != 'html' else 'col'} mb-2"
+                name="acknowledgement_name">
+                <strong>Acknowledgement Name:</strong><br/>
+                <span t-field="o.acknowledgement_name"/>
+            </div>
+
+            <div t-if="o.eway_bill_no"
+                t-attf-class="#{'col-auto col-3 mw-100' if report_type != 'html' else 'col'} mb-2"
+                name="ewaybill">
+                <strong>E-Way Bill No:</strong><br/>
+                <span t-field="o.eway_bill_no"/>
             </div>
         </xpath>
        
@@ -156,4 +181,24 @@
         </xpath>
 
     </template>
+
+    <!-- <record id="paperformat_invoice" model="report.paperformat">
+        <field name="name">Invoices</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">30</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">25</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="paperformat_id" ref="hason_invoice.paperformat_invoice"/>
+    </record> -->
 </odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_indiamart_config_settings,access.indiamart.config.settings,hason_indiamart_api.model_indiamart_config_settings,base.group_user,1,1,1,1
+access_tradeindia_config_settings,access.tradeindia.config.settings,hason_indiamart_api.model_tradeindia_config_settings,base.group_user,1,1,1,1

@@ -1,4 +1,4 @@
-from odoo import models, api
+from odoo import models, fields, api
 
 class ResCurrency(models.Model):
     _inherit = 'res.currency'
@@ -17,3 +17,9 @@ class ResCurrency(models.Model):
             words += f" And {_num_to_words(amount_dec)} Paise"
 
         return words
+    
+# class ResCompany(models.Model):
+#     _inherit = 'res.company'
+
+#     pan_number = fields.Char(related='partner_id.l10n_in_pan', store=False)
+

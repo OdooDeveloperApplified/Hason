@@ -27,6 +27,10 @@
                        required="billing_address_type == 'other'"/>
             
             </xpath>
+            <xpath expr="//field[@name='validity_date']" position="after">
+                    <field name="vehicle_no"/>
+                    <field name="eway_bill_no"/>
+                </xpath>
         </field>
     </record>
 </odoo>

@@ -26,13 +26,16 @@ class SaleOrder(models.Model):
         invoice_vals['custom_billing_partner_id'] = self.custom_billing_partner_id.id
         return invoice_vals
     
-class AccountMove(models.Model):
-    _inherit = 'account.move'
+    vehicle_no = fields.Char(string="Vehicle No")
+    eway_bill_no = fields.Char(string="E-Way Bill No")
 
-    billing_address_type = fields.Selection([
-        ('hason', 'Hason'),
-        ('other', 'Other')
-    ], string='Billing Address Type', default='hason')
+    def _prepare_invoice(self):
+        vals = super()._prepare_invoice()
+        vals.update({
+            'vehicle_no': self.vehicle_no,
+            'eway_bill_no': self.eway_bill_no,
+        })
+        return vals
+    
 
-    custom_billing_partner_id = fields.Many2one('res.partner', string='Billing Contact')
     
