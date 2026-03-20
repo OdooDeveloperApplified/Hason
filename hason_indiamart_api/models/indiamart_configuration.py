@@ -2,6 +2,7 @@ import requests
 import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from datetime import timedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -132,6 +133,125 @@ class ApiConfig(models.Model):
                 "message": _(f"{created_count} IndiaMART leads imported successfully!"),}
         }
 
+# class ApiConfig(models.Model):
+#     _name = "indiamart.config.settings"
+#     _inherit = "res.config.settings"
+
+#     name = fields.Char(string="Name")
+#     user_id = fields.Char(string="IndiaMART User ID")
+#     profile_id = fields.Char(string="IndiaMART Profile ID")
+#     glusr_crm_key = fields.Char(string="IndiaMART API Key")
+#     base_url = fields.Char(string="IndiaMART Base URL")
+#     cron_start_date = fields.Datetime(string="Cron Start Date")
+#     cron_end_date = fields.Datetime(string="Cron End Date")
+
+#     def fetch_indiamart_leads(self):
+#         _logger.info("cron run")
+#         """
+#         Fetch leads automatically using cron.
+#         """
+#         self.ensure_one()
+#         now = fields.Datetime.now()
+
+#         if not self.glusr_crm_key or not self.base_url:
+#             _logger.warning("IndiaMART config incomplete. Skipping cron run.")
+#             return
+
+#         # Initialize cron window if empty
+#         if not self.cron_start_date:
+#             self.cron_start_date = now.replace(minute=0, second=0)
+#         if not self.cron_end_date:
+#             self.cron_end_date = self.cron_start_date + timedelta(hours=1)
+
+#         start_dt = self.cron_start_date
+#         end_dt = self.cron_end_date
+
+#         start_date_fmt = start_dt.strftime("%d-%b-%Y %H:%M:%S")
+#         end_date_fmt = end_dt.strftime("%d-%b-%Y %H:%M:%S")
+
+#         url = (
+#             f"{self.base_url}"
+#             f"?glusr_crm_key={self.glusr_crm_key}"
+#             f"&start_time={start_date_fmt}"
+#             f"&end_time={end_date_fmt}"
+#         )
+
+#         _logger.info("IndiaMART Cron URL: %s", url)
+
+#         try:
+#             response = requests.get(url, timeout=25)
+#             _logger.info("response1 : %s",response)
+#             response.raise_for_status()
+#             data = response.json()
+#             _logger.info("data : %s",data)
+#         except Exception as e:
+#             _logger.error("IndiaMART Cron fetch failed: %s", e)
+#             return
+
+#         leads = data.get("RESPONSE", [])
+#         _logger.info("leads : %s",leads)
+#         if not leads:
+#             _logger.info("No IndiaMART leads found in cron window.")
+#             return
+
+#         Lead = self.env["crm.lead"]
+#         Partner = self.env["res.partner"]
+#         State = self.env["res.country.state"]
+#         created_count = 0
+
+#         for item in leads:
+#             query_id = item.get("UNIQUE_QUERY_ID")
+#             if not query_id:
+#                 continue
+#             # Skip duplicates
+#             if Lead.search([("indiamart_query_id", "=", query_id)], limit=1):
+#                 continue
+
+#             # Partner
+#             partner = None
+#             mobile = item.get("SENDER_MOBILE")
+#             if mobile:
+#                 partner = Partner.search([("mobile", "=", mobile)], limit=1)
+
+#             if not partner:
+#                 partner = Partner.create({
+#                     "name": item.get("SENDER_NAME") or "IndiaMART Contact",
+#                     "mobile": mobile,
+#                     "phone": item.get("SENDER_PHONE"),
+#                     "email": item.get("SENDER_EMAIL"),
+#                     "street": item.get("SENDER_ADDRESS"),
+#                     "city": item.get("SENDER_CITY"),
+#                     "zip": item.get("SENDER_PINCODE"),
+#                     "company_name": item.get("SENDER_COMPANY"),
+#                 })
+
+#             state_id = False
+#             if item.get("SENDER_STATE"):
+#                 state = State.search([("name", "ilike", item.get("SENDER_STATE"))], limit=1)
+#                 state_id = state.id if state else False
+
+#             Lead.create({
+#                 "name": item.get("SUBJECT") or "IndiaMART Inquiry",
+#                 "partner_id": partner.id,
+#                 "partner_name": item.get("SENDER_COMPANY"),
+#                 "mobile": mobile,
+#                 "phone": item.get("SENDER_PHONE"),
+#                 "email_from": item.get("SENDER_EMAIL"),
+#                 "street": item.get("SENDER_ADDRESS"),
+#                 "city": item.get("SENDER_CITY"),
+#                 "state_id": state_id,
+#                 "zip": item.get("SENDER_PINCODE"),
+#                 "description": item.get("QUERY_MESSAGE"),
+#                 "indiamart_query_id": query_id,
+#             })
+#             created_count += 1
+
+#         # Move cron window forward
+#         self.cron_start_date = end_dt + timedelta(minutes=1)
+#         self.cron_end_date = self.cron_start_date + timedelta(hours=1)
+#         _logger.info("%s IndiaMART leads imported successfully via cron.", created_count)
+
+
 class ApiConfigTrade(models.Model):
     _name = "tradeindia.config.settings"
     _inherit = "res.config.settings"
@@ -222,7 +342,7 @@ class ApiConfigTrade(models.Model):
         created_count = 0
 
         for item in leads:
-            query_id = item.get("inq_id")
+            query_id = item.get("rfi_id") or str(item.get("generated"))
             if not query_id:
                 continue
 
@@ -241,7 +361,7 @@ class ApiConfigTrade(models.Model):
                     "street": item.get("sender_address"),
                     "city": item.get("sender_city"),
                     "zip": item.get("sender_pincode"),
-                    "company_name": item.get("sender_company"),
+                    "company_name": item.get("sender_co"),
                 })
 
             state_id = False
@@ -250,9 +370,9 @@ class ApiConfigTrade(models.Model):
                 state_id = state.id if state else False
 
             Lead.create({
-                "name": item.get("subject") or "TradeIndia Inquiry",
+                "name": item.get("subject") or item.get("product_name") or "TradeIndia Inquiry",
                 "partner_id": partner.id,
-                "partner_name": item.get("sender_company"),
+                "partner_name": item.get("sender_co"),
                 "mobile": mobile,
                 "phone": item.get("sender_phone"),
                 "email_from": item.get("sender_email"),

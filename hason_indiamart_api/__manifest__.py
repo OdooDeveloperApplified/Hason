@@ -9,6 +9,7 @@
         'security/ir.model.access.csv',
         'views/indiamart_settings_view.xml',
         'views/tradeindia_settings_view.xml',
+        # 'data/lead_fetch_cron.xml',
     ],
     
     'assets': {},

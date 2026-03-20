@@ -150,7 +150,7 @@
                 <div class="col-6">
                     <strong>Billing Address:</strong><br/>
                         
-                    <t t-if="o.billing_address_type == 'hason'">
+                    <!-- <t t-if="o.billing_address_type == 'hason'">
                         <div t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
                     </t>
                      <t t-elif="o.billing_address_type == 'other' and o.custom_billing_partner_id">
@@ -163,6 +163,14 @@
                     <div t-if="o.partner_id.vat">
                         <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-esc="o.company_id.account_fiscal_country_id.vat_label"/>
                         <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>
+                    </div>
+                    <div t-if="o.l10n_in_state_id" class="mt-1">
+                        Place of supply: <span t-out="o.l10n_in_state_id.name" />
+                    </div> -->
+                    <div t-field="o.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                        
+                    <div t-if="o.company_id.account_fiscal_country_id.code == 'IN' and o.partner_shipping_id.vat">
+                        GSTIN: <span t-field="o.partner_shipping_id.vat"/>
                     </div>
                     <div t-if="o.l10n_in_state_id" class="mt-1">
                         Place of supply: <span t-out="o.l10n_in_state_id.name" />

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Vehicle Master Form View -->
+    <record id="view_vehicle_master_form" model="ir.ui.view">
+        <field name="name">vehicle.master.form</field>
+        <field name="model">vehicle.master</field>
+        <field name="arch" type="xml">
+            <form string="Vehicle Number">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vehicle Master Tree View -->
+    <record id="view_vehicle_master_tree" model="ir.ui.view">
+        <field name="name">vehicle.master.tree</field>
+        <field name="model">vehicle.master</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    
+    <!-- Vehicle Master Action -->
+    <record id="action_vehicle_master" model="ir.actions.act_window">
+        <field name="name">Vehicle Master</field>
+        <field name="res_model">vehicle.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Vehicle numbers.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vehicle_master"
+          name="Vehicle Master"
+          parent="sale.menu_sale_config"
+          action="action_vehicle_master"
+          sequence="80"/>
+</odoo>

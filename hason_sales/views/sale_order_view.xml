@@ -12,6 +12,12 @@
             <xpath expr="//field[@name='l10n_in_gst_treatment']" position="after">
                 <field name="subject"/>
             </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+             <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field name="po_no"/>
                 <field name="batch_no"/>
@@ -28,9 +34,20 @@
             
             </xpath>
             <xpath expr="//field[@name='validity_date']" position="after">
-                    <field name="vehicle_no"/>
-                    <field name="eway_bill_no"/>
-                </xpath>
+                <field name="vehicle_ids"/>
+                <field name="eway_bill_no"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
+                <field name="packaging_id"/>
+                <field name="packaging_qty"/>
+            </xpath>
+            <xpath expr="//group[@name='sale_total']/field[@name='tax_totals']" position="after">
+                <field name="is_enabled_roundoff"/>
+              
+                <field name="amount_total_rounded" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                
+            </xpath>
+
         </field>
     </record>
 </odoo>
