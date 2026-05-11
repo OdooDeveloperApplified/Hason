@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Industry Master Form View -->
+    <record id="view_industry_master_form" model="ir.ui.view">
+        <field name="name">industry.master.form</field>
+        <field name="model">commercial.industry</field>
+        <field name="arch" type="xml">
+            <form string="Industries">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Industry Master Tree View -->
+    <record id="view_industry_master_tree" model="ir.ui.view">
+        <field name="name">industry.master.tree</field>
+        <field name="model">commercial.industry</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    
+    <!-- Industry Master Action -->
+    <record id="action_industry_master" model="ir.actions.act_window">
+        <field name="name">Industry Master</field>
+        <field name="res_model">commercial.industry</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Industry names.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_industry_master"
+          name="Industry Master"
+          parent="crm.crm_menu_config"
+          action="action_industry_master"
+          sequence="80"/>
+</odoo>

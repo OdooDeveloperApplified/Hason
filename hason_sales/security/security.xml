@@ -1,16 +1,13 @@
 <odoo>
     <data>
         <record id="group_invoice_approver" model="res.groups">
-            <field name="name">Invoice Approver</field>
+            <field name="name">Invoice creation</field>
         </record>
         <record model="res.groups" id="group_product_creation">
             <field name="name">Product creation</field>
         </record>
         <record model="res.groups" id="group_quotation_creation">
-            <field name="name">Quotation creation</field>
+            <field name="name">Sale Order creation</field>
         </record>
-        <!-- <record model="res.groups" id="group_global_approver">
-            <field name="name">Global Approver</field>
-        </record> -->
     </data>
 </odoo>

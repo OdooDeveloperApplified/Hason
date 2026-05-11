@@ -20,6 +20,7 @@
             </xpath>
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field name="po_no"/>
+                <field name="po_date"/>
                 <field name="batch_no"/>
                 <field name="bill_no"/>
                 <field name="lr_no"/>

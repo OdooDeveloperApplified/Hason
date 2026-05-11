@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from num2words import num2words
 
 
 class SaleOrder(models.Model):
@@ -8,6 +9,7 @@ class SaleOrder(models.Model):
     transport = fields.Char(string="Transport")
     subject = fields.Char(string="Subject")
     po_no = fields.Char(string="PO No.")
+    po_date = fields.Date(string="PO Date")
     batch_no = fields.Char(string="Batch No.")
     bill_no = fields.Char(string="Bill No.")
     lr_no = fields.Char(string="LR no.")
@@ -51,12 +53,12 @@ class SaleOrder(models.Model):
             else:
                 order.amount_roundoff = 0.0
                 order.amount_total_rounded = order.amount_total
+    
+    def action_confirm(self):
+        if not self.env.user.has_group('hason_sales.group_quotation_creation'):
+            raise UserError(_("Invalid Operation: You are not allowed to confirm quotations. Contact your Administrator for the access."))
 
-    def _create_invoices(self, grouped=False, final=False, date=None):
-        if not self.env.user.has_group('hason_sales.group_invoice_approver'):
-            raise UserError(_("Invalid Operation: Only Admin/Authorized users can create invoices."))
-
-        return super()._create_invoices(grouped=grouped, final=final, date=date)
+        return super().action_confirm()
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
@@ -106,17 +108,10 @@ class ProductTemplate(models.Model):
             }
 
             if restricted_fields.intersection(vals.keys()):
-                raise UserError(_("Invalid operation: You are not allowed to edit Product details."))
+                raise UserError(_("Invalid operation: You are not allowed to create/edit Product details. Contact your Administrator for the access."))
 
         return super().write(vals)
 
-class CrmLead(models.Model):
-    _inherit = "crm.lead"
 
-    def action_new_quotation(self):
-        if not self.env.user.has_group('hason_sales.group_quotation_creation'):
-            raise UserError(_("Invalid Operation: You are not allowed to create quotations from CRM."))
-
-        return super().action_new_quotation()
 
 

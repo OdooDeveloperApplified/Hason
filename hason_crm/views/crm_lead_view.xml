@@ -1,0 +1,16 @@
+<odoo>
+    <!-- Record to add custom fields in leads form view of crm module -->
+    <record id="view_crm_lead_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+           <xpath expr="//group[@name='lead_priority']" position="after">
+                <group>
+                    <field name="industry_ids"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+ 

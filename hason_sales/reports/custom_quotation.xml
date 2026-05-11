@@ -3,51 +3,52 @@
     <!-- Document Layout template -->
     <template id="document_layout_custom_quotation" >
         <t t-call="web.basic_layout">
+    
             <!-- HEADER -->
-            <!-- HEADER -->
-            <div style="border:1px solid black; padding:5px; width:100%;">
-
-                <!-- Company Name -->
-                <div style="text-align:center; font-size:30px; font-weight:bold;">
-                    <span t-esc="res_company.name"/>
-                </div>
-
-                <!-- Address -->
-                <div style="text-align:center; font-size:16px;">
-                    <t t-if="res_company.street">
-                        <span t-esc="res_company.street"/>
-                    </t>
-                    <t t-if="res_company.street2">
-                        <span t-esc="res_company.street2"/><br/>
-                    </t>
-                    <t t-if="res_company.city">
-                        <span t-esc="res_company.city"/>,
-                    </t>
-                    <t t-if="res_company.state_id">
-                        <span t-esc="res_company.state_id.name"/>
-                    </t>
-                    <t t-if="res_company.country_id">
-                        (<span t-esc="res_company.country_id.name"/>)
-                    </t>
-                    <t t-if="res_company.zip">
-                        - <span t-esc="res_company.zip"/>
-                    </t>
-                </div>
-
-                <!-- GST Row -->
-                <div style="margin-top:8px; font-size:16px; width:100%;">
-                    <div style="float:left;">
-                        <b>VAT TIN No:</b>
-                        <span t-esc="res_company.vat"/>
+            <div style="border:1px solid black;">
+                <div class="row">
+                    <!-- LEFT : Company Logo -->
+                    <div class="col-2"
+                        style="border-right:1px solid black;">
+                        <img t-if="res_company.logo"
+                            t-att-src="image_data_uri(res_company.logo)"
+                            style="max-height:90px; max-width:100%; margin-left:30px; margin-top:20px;"/>
                     </div>
-
-                    <div style="float:right;">
-                        <b>CST TIN No:</b> 24580801383
+                    <!-- RIGHT : Company Details -->
+                    <div class="col-10">
+                        <!-- Company Name -->
+                        <div class="text-center" style="font-size:30px; font-weight:bold;">
+                            <span t-esc="res_company.name"/>
+                        </div>
+                        <!-- Address -->
+                        <div class="text-center" style="font-size:18px;">
+                            <span t-esc="res_company.street"/>
+                            <span t-esc="res_company.street2"/>
+                        </div>
+                        <div class="text-center" style="font-size:18px;">
+                            <span t-if="res_company.city" t-esc="res_company.city"/> ,
+                            <span t-if="res_company.state_id" t-esc="res_company.state_id.name"/>
+                            <span t-if="res_company.country_id"> (<t t-esc="res_company.country_id.name"/>)</span>
+                            <span t-if="res_company.zip"> , Pin- <t t-esc="res_company.zip"/></span>
+                        </div>
+                        <!-- GST + PAN Row -->
+                        <div class="row" style="margin-top:10px; font-size:18px;">
+                            <!-- Left -->
+                            <div class="col-6 ms-2">
+                                <b>GSTIN No.:</b>
+                                <span t-esc="res_company.vat"/><br/>
+                                <b>State:</b>
+                                <span t-if="res_company.state_id" t-esc="res_company.state_id.name"/>
+                            </div>
+                            <!-- Right -->
+                            <div class="col-6" style="text-align: right; padding-right: 15px;">
+                                <b>PAN No.: </b><span>AAPCS9573C</span><br/>
+                                <b>State Code :</b>
+                                <span t-if="res_company.state_id" t-esc="res_company.state_id.l10n_in_tin"/>
+                            </div>
+                        </div>
                     </div>
-
-                    <div style="clear:both;"></div>
                 </div>
-
             </div>
 
             <!-- Inner content -->
@@ -103,6 +104,7 @@
                                         <th style="width: 40%;text-align: center;font-weight:bold;">Particular</th>
                                         <th style="width: 14%;text-align: center;font-weight:bold;">HSN / SAC</th>
                                         <th style="width: 10%;text-align: center;font-weight:bold;">Quantity</th>
+                                        <th style="width: 10%;text-align: center;font-weight:bold;">Taxes</th>
                                         <th style="width: 18%;text-align: center;font-weight:bold;">Rate</th>
                                         <th style="width: 18%;text-align: center;font-weight:bold;">Amount</th>
                                     </tr>
@@ -135,10 +137,14 @@
 
                                                 <!-- PARTICULARS -->
                                                 <td style="text-align: center;">
+                                                    <!-- Product Category -->
+                                                    <span t-if="line.product_id.categ_id" t-esc="line.product_id.categ_id.name"/><br/>
                                                     <!-- Product Name -->
                                                     <span t-if="line.product_id" t-esc="line.product_id.name"/><br/>
-                                                    <!-- Product Description -->
-                                                    <span t-if="line.name" t-esc="line.name"/><br/>
+                                                    <!-- Packaging -->
+                                                    <span t-if="line.packaging_id">
+                                                    (<t t-esc="line.packaging_id.name"/> x <t t-esc="line.packaging_qty"/>)
+                                                </span>
                                                 </td>
 
                                                 <!-- HSN/SAC CODE -->
@@ -149,6 +155,12 @@
                                                 <!-- QUANTITY -->
                                                 <td style="text-align: center;">
                                                     <span t-field="line.product_uom_qty"/>
+                                                </td>
+
+                                                <!-- TAXES -->
+                                                <t t-set="taxes" t-value="', '.join([(tax.invoice_label or tax.name) for tax in line.tax_id])"/>
+                                                <td name="td_taxes" t-attf-class="text-end {{ 'text-nowrap' if len(taxes) &lt; 10 else '' }}">
+                                                    <span t-out="taxes">Tax 15%</span>
                                                 </td>
                                                 
                                                 <!-- RATE -->
@@ -170,11 +182,18 @@
                                         <td colspan="4" style="vertical-align:top; padding:8px;">
                                             <b>Transport :</b>
                                             <span t-esc="doc.transport"/><br/>
+
+                                            <b>Incoterm:</b>
+                                            <span t-esc="doc.incoterm.name"/><br/>
+
+                                            <b>Incoterm Location:</b>
+                                            <span t-esc="doc.incoterm_location"/><br/>
+                                            
                                             <b>Payment Terms:</b>
                                             <span t-if="doc.payment_term_id" t-esc="doc.payment_term_id.name"/>
                                         </td>
                                         <!-- RIGHT TAX TABLE -->
-                                        <td colspan="2" style="padding:0;">
+                                        <!-- <td colspan="2" style="padding:0;">
                                             <table style="width:100%; border-collapse:collapse; font-size:16px;">
                                                 <tr style="font-weight:bold;">
                                                     <td style="padding:6px;">Sub Total</td>
@@ -191,7 +210,48 @@
                                                     </td>
                                                 </tr>
                                             </table>
-                                        </td>
+                                        </td> -->
+                                        <td colspan="3" style="padding:0;">
+
+                                        <table style="width:100%; border-collapse:collapse; font-size:16px;">
+
+                                            <t t-set="tax_totals" t-value="doc.tax_totals"/>
+                                            <t t-set="tax_lines" t-value="sum([tax_totals['groups_by_subtotal'][k] for k in tax_totals['groups_by_subtotal']], [])"/>
+
+                                            <t t-foreach="tax_lines" t-as="tax">
+                                                <tr>
+                                                    <td style="padding:6px;">
+                                                        <span t-esc="tax['tax_group_name']"/>
+                                                        <span t-if="tax.get('tax_group_rate')">
+                                                            (<t t-esc="tax['tax_group_rate']"/>%)
+                                                        </span>
+                                                    </td>
+                                                    <td style="text-align:right;padding:6px;">
+                                                        <span t-esc="tax['tax_group_amount']"
+                                                            t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
+                                            <tr style="font-weight:bold;">
+                                                <td style="padding:6px;">Sub Total</td>
+                                                <td style="text-align:right;padding:6px;">
+                                                    <span t-esc="doc.amount_total"
+                                                        t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                </td>
+                                            </tr>
+
+                                            <tr style="font-weight:bold;">
+                                                <td style="padding:6px;">Grand Total (Rounded)</td>
+                                                <td style="text-align:right;padding:6px;">
+                                                    <span t-esc="doc.amount_total_rounded"
+                                                        t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                </td>
+                                            </tr>
+
+                                        </table>
+
+                                    </td>
                                     </tr>  
                                 </tbody>
                             </table>

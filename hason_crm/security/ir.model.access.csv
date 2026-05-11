@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_commercial_industry,access.commercial.industry,hason_crm.model_commercial_industry,base.group_user,1,1,1,1

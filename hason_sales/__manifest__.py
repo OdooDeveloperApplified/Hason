@@ -4,7 +4,7 @@
     'summary': 'Add Transport Name field in Sale Order',
     'category': 'Sales',
     'author': 'Applified',
-    'depends': ['sale', 'l10n_in', 'stock','sale_stock', 'account','crm'],
+    'depends': ['base','web','sale', 'l10n_in', 'stock','sale_stock', 'account','crm'],
     'data': [
         'security/ir.model.access.csv',
         'security/security.xml',

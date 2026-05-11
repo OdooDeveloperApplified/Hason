@@ -22,21 +22,40 @@
         <xpath expr="//td[@name='account_invoice_line_name']" position="replace">
             <td name="account_invoice_line_name">
 
-                <!-- Product Name -->
-                <div>
-                    <strong><span t-esc="line.product_id.display_name"/></strong>
+                <!-- Product Category -->
+                <div t-if="line.product_id.categ_id">
+                    <span t-esc="line.product_id.categ_id.name"/>
                 </div>
 
-                <!-- Sale Order Line Description -->
+                <!-- Product Name -->
+                <div>
+                    <strong>
+                        <span t-esc="line.product_id.display_name"/>
+                    </strong>
+                </div>
+
+                <!-- Packaging Details (from Sale Order Line) -->
                 <t t-if="line.sale_line_ids">
+                    <t t-foreach="line.sale_line_ids" t-as="so_line">
+                        <div t-if="so_line.packaging_id" class="text-muted" style="font-size: 13px;">
+                            (
+                            <t t-esc="so_line.packaging_id.name"/>
+                            x
+                            <t t-esc="so_line.packaging_qty"/>
+                            )
+                        </div>
+                    </t>
+                </t>
+
+                <!-- Sale Order Line Description -->
+                <!-- <t t-if="line.sale_line_ids">
                     <t t-foreach="line.sale_line_ids" t-as="so_line">
                         <div t-if="so_line.name and so_line.name != line.product_id.display_name"
                             style="font-size: 13px;" class="text-muted">
                             <span t-esc="so_line.name"/>
                         </div>
                     </t>
-                </t>
-
+                </t> -->
             </td>
         </xpath>
 
