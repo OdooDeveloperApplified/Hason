@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_attendance_form_inherit_hason" model="ir.ui.view">
+        <field name="name">hr.attendance.form.inherit.hason</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='check_out']" position="after">
+                <field name="employee_calendar_id" readonly="1" force_save="1" options="{'no_open': True}"/>
+                <field name="applied_shift_id" readonly="1" force_save="1" options="{'no_open': True}"/>
+                <field name="is_half_day" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_attendance_tree_inherit_hason" model="ir.ui.view">
+        <field name="name">hr.attendance.tree.inherit.hason</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='check_out']" position="after">
+                <field name="employee_calendar_id" optional="show"/>
+                <field name="applied_shift_id" optional="show"/>
+                <field name="is_half_day" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

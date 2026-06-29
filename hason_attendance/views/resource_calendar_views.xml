@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="resource_calendar_form_inherit_hason" model="ir.ui.view">
+        <field name="name">resource.calendar.form.inherit.hason</field>
+        <field name="model">resource.calendar</field>
+        <field name="inherit_id" ref="resource.resource_calendar_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tz']" position="after">
+                <field name="shift_type"/>
+                <field name="dynamic_day_shift_id" invisible="shift_type != 'dynamic'" required="shift_type == 'dynamic'"/>
+                <field name="dynamic_night_shift_id" invisible="shift_type != 'dynamic'" required="shift_type == 'dynamic'"/>
+                <field name="night_shift_start_hour" invisible="shift_type != 'dynamic'" widget="float_time"/>
+                <field name="allowed_location_ids" widget="many2many_tags"/>
+                <field name="applicable_job_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

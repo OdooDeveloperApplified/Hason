@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Factory Morning Shift -->
+        <record id="resource_calendar_factory_morning" model="resource.calendar">
+            <field name="name">Factory Morning Shift</field>
+            <field name="hours_per_day">12.0</field>
+            <field name="break_window_start">12.0</field>
+            <field name="break_window_end">14.0</field>
+            <field name="max_break_duration">45</field>
+            <field name="over_break_action">hr_review</field>
+            <field name="punch_in_rule">select_shift</field>
+            <field name="grace_period">10</field>
+        </record>
+
+        <!-- Factory Night Shift -->
+        <record id="resource_calendar_factory_night" model="resource.calendar">
+            <field name="name">Factory Night Shift</field>
+            <field name="hours_per_day">12.0</field>
+            <field name="break_window_start">0.0</field> <!-- 12:00 AM -->
+            <field name="break_window_end">2.0</field> <!-- 2:00 AM -->
+            <field name="max_break_duration">45</field>
+            <field name="over_break_action">hr_review</field>
+            <field name="punch_in_rule">select_shift</field>
+            <field name="grace_period">10</field>
+        </record>
+
+        <!-- Standard Schedule -->
+        <record id="resource_calendar_standard" model="resource.calendar">
+            <field name="name">Standard Schedule</field>
+            <field name="hours_per_day">10.0</field>
+            <field name="break_window_start">12.0</field>
+            <field name="break_window_end">14.0</field>
+            <field name="max_break_duration">45</field>
+            <field name="over_break_action">hr_review</field>
+            <field name="punch_in_rule">select_shift</field>
+            <field name="grace_period">10</field>
+        </record>
+
+        <!-- Office Standard Schedule -->
+        <record id="resource_calendar_office_standard" model="resource.calendar">
+            <field name="name">Office Standard Schedule</field>
+            <field name="hours_per_day">9.0</field>
+            <field name="break_window_start">13.0</field>
+            <field name="break_window_end">14.0</field>
+            <field name="max_break_duration">30</field>
+            <field name="over_break_action">hr_review</field>
+            <field name="punch_in_rule">multi_location</field>
+            <field name="grace_period">10</field>
+        </record>
+    </data>
+</odoo>

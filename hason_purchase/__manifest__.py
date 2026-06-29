@@ -8,6 +8,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/purchase_template_views.xml',
+        'data/terms_conditions.xml',
         'reports/purchase_report.xml',
         ],
     'installable': True,

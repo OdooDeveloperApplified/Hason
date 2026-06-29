@@ -108,14 +108,26 @@
                         <div class="mt-2" style="width:100%; border:1px solid black;">
                             <!-- Left Column -->
                             <div style="display:inline-block; vertical-align:top; width:49%; border-right:1px solid black; box-sizing:border-box; padding-left:6px; padding-top:4px; padding-bottom:4px;">
-                                <strong>Details of Reciever (Billed to) :</strong><br/>
-                                <span><strong>Name: </strong><t t-esc="doc.partner_id.name"/></span><br/>
-                                <span><strong>Address: </strong><t t-esc="doc.partner_id.street"/></span><br/>
-                                <t t-esc="doc.partner_id.street2"/><br/>
-                                <t t-esc="doc.partner_id.city"/><br/>
-                                <span><strong>State: </strong><t t-esc="doc.partner_id.state_id.name"/></span><br/>
-                                <span><strong>GSTIN No. : </strong><t t-esc="doc.partner_id.vat"/></span><br/>
-                                <span><strong>PAN No. : </strong><t t-esc="doc.partner_id.l10n_in_pan"/></span><br/>
+                                <t t-if="doc.billing_address_type == 'other' and doc.custom_billing_partner_id">
+                                    <strong>Details of Reciever (Billed to) :</strong><br/>
+                                    <span><strong>Name: </strong><t t-esc="doc.custom_billing_partner_id.name"/></span><br/>
+                                    <span><strong>Address: </strong><t t-esc="doc.custom_billing_partner_id.street"/></span><br/>
+                                    <t t-esc="doc.custom_billing_partner_id.street2"/><br/>
+                                    <t t-esc="doc.custom_billing_partner_id.city"/><br/>
+                                    <span><strong>State: </strong><t t-esc="doc.custom_billing_partner_id.state_id.name"/></span><br/>
+                                    <span><strong>GSTIN No. : </strong><t t-esc="doc.custom_billing_partner_id.vat"/></span><br/>
+                                    <span><strong>PAN No. : </strong><t t-esc="doc.custom_billing_partner_id.l10n_in_pan"/></span><br/>
+                                </t>
+                                <t t-else="">
+                                    <strong>Details of Reciever (Billed to) :</strong><br/>
+                                    <span><strong>Name: </strong><t t-esc="doc.partner_id.name"/></span><br/>
+                                    <span><strong>Address: </strong><t t-esc="doc.partner_id.street"/></span><br/>
+                                    <t t-esc="doc.partner_id.street2"/><br/>
+                                    <t t-esc="doc.partner_id.city"/><br/>
+                                    <span><strong>State: </strong><t t-esc="doc.partner_id.state_id.name"/></span><br/>
+                                    <span><strong>GSTIN No. : </strong><t t-esc="doc.partner_id.vat"/></span><br/>
+                                    <span><strong>PAN No. : </strong><t t-esc="doc.partner_id.l10n_in_pan"/></span><br/>
+                                </t>
                             </div>
                             <!-- Right Column -->
                             <div style="display:inline-block; vertical-align:top; width:49%; box-sizing:border-box; padding-left:6px; padding-top:4px; padding-bottom:4px;">
